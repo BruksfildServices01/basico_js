@@ -1,0 +1,11 @@
+{
+    "nome": "João",
+    "idade": 30,
+    "isEstudante": false,
+    "habilidades": ["JavaScript", "React", "Node.js"],
+    "endereco": {
+      "cidade": "São Paulo",
+      "pais": "Brasil"
+    }
+  }
+  
