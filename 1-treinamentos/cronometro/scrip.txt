@@ -1,0 +1,84 @@
+// Definindo variáveis para controlar o tempo e o estado do cronômetro
+let timer; // Variável para armazenar o intervalo de tempo para atualizar o cronômetro
+let running = false; // Variável para indicar se o cronômetro está em execução
+let paused = false; // Variável para indicar se o cronômetro está pausado
+let seconds = 0; // Variável para armazenar os segundos do cronômetro
+let minutes = 0; // Variável para armazenar os minutos do cronômetro
+let hours = 0; // Variável para armazenar as horas do cronômetro
+let lastPausedTime = 0; // Variável para armazenar o tempo quando o cronômetro foi pausado pela última vez
+
+// Função para iniciar ou pausar o cronômetro
+function startPause() {
+  if (running) {
+    // Se o cronômetro estiver em execução
+    if (paused) {
+      // Se estiver pausado, retomamos a contagem
+      let currentTime = new Date().getTime(); // Obtemos o tempo atual em milissegundos
+      let pauseDuration = (currentTime - lastPausedTime) / 1000; // Calculamos a duração da pausa em segundos
+      seconds += pauseDuration; // Adicionamos a duração da pausa aos segundos do cronômetro
+      paused = false; // Atualizamos o estado do cronômetro para indicar que não está mais pausado
+      document.getElementById("startPause").textContent = "Pausar"; // Atualizamos o texto do botão para "Pausar"
+      // Continuamos a atualizar o cronômetro
+      timer = setInterval(updateTimer, 1000); // Configuramos um novo intervalo para continuar atualizando o cronômetro
+    } else {
+      // Se estiver em execução, pausamos a contagem
+      clearInterval(timer); // Paramos o intervalo de atualização do cronômetro
+      paused = true; // Atualizamos o estado do cronômetro para indicar que está pausado
+      lastPausedTime = new Date().getTime(); // Armazenamos o tempo atual em milissegundos para calcular a duração da pausa
+      document.getElementById("startPause").textContent = "Continuar"; // Atualizamos o texto do botão para "Continuar"
+    }
+  } else {
+    // Se o cronômetro não estiver em execução, iniciamos
+    timer = setInterval(updateTimer, 1000); // Configuramos um intervalo para atualizar o cronômetro a cada segundo
+    running = true; // Atualizamos o estado do cronômetro para indicar que está em execução
+    document.getElementById("startPause").textContent = "Pausar"; // Atualizamos o texto do botão para "Pausar"
+  }
+}
+
+// Função para atualizar o cronômetro
+function updateTimer() {
+  seconds++; // Incrementamos os segundos
+  if (seconds === 60) {
+    // Se os segundos alcançarem 60, incrementamos os minutos e resetamos os segundos
+    seconds = 0;
+    minutes++;
+    if (minutes === 60) {
+      // Se os minutos alcançarem 60, incrementamos as horas e resetamos os minutos
+      minutes = 0;
+      hours++;
+    }
+  }
+  // Atualizamos o display do cronômetro com o tempo atualizado
+  document.getElementById("display").textContent = formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds);
+}
+
+// Função para parar o cronômetro
+function stop() {
+  clearInterval(timer); // Paramos o intervalo de atualização do cronômetro
+  running = false; // Atualizamos o estado do cronômetro para indicar que está parado
+  paused = false; // Atualizamos o estado do cronômetro para indicar que não está mais pausado
+  document.getElementById("startPause").textContent = "Iniciar"; // Atualizamos o texto do botão para "Iniciar"
+}
+
+// Função para resetar o cronômetro
+function reset() {
+  clearInterval(timer); // Paramos o intervalo de atualização do cronômetro
+  running = false; // Atualizamos o estado do cronômetro para indicar que está parado
+  paused = false; // Atualizamos o estado do cronômetro para indicar que não está mais pausado
+  seconds = 0; // Resetamos os segundos
+  minutes = 0; // Resetamos os minutos
+  hours = 0; // Resetamos as horas
+  // Atualizamos o display do cronômetro para mostrar o tempo inicial
+  document.getElementById("display").textContent = "00:00:00";
+  document.getElementById("startPause").textContent = "Iniciar"; // Atualizamos o texto do botão para "Iniciar"
+}
+
+// Função para formatar o tempo com dois dígitos
+function formatTime(time) {
+  return (time < 10 ? "0" : "") + time; // Adicionamos um zero à esquerda se o tempo for menor que 10
+}
+
+// Adicionando event listeners aos botões
+document.getElementById("startPause").addEventListener("click", startPause); // Quando o botão "Iniciar/Pausar" é clicado, chamamos a função startPause()
+document.getElementById("stop").addEventListener("click", stop); // Quando o botão "Parar" é clicado, chamamos a função stop()
+document.getElementById("reset").addEventListener("click", reset); // Quando o botão "Zerar" é clicado, chamamos a função reset()
